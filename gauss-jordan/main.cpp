@@ -9,6 +9,9 @@
 #include <map>
 #include <math.h>
 
+const int MAX_INT = 1215752192;
+const double SMALL_NUM = 1e-10;
+
 typedef struct order_array_elem {
     int old_row;
     double val;
@@ -56,8 +59,6 @@ void insertion_sort(oa_elem_t * arr, int n) {
         }
     }
 }
-
-#define MAX_INT 1215752192
 
 void merge(oa_elem_t A[], int p, int q, int r) {
     int size_r, size_l;
@@ -176,6 +177,7 @@ void gauss_jordan(double ** mat, int n, double ** mat_inv) {
     double * order_arr = new double[n];
 
 
+    // Initialize matrix inverse
     for(int row = 0; row < n; ++row) {
         for(int c = 0; c < n; ++c) {
             if(c == row) {
@@ -207,7 +209,7 @@ void gauss_jordan(double ** mat, int n, double ** mat_inv) {
     for(int c = 0; c < n; ++c) {
 
         // Sort if under threshold
-        if(fabs(mat_ref[c][c]) < 1e-8) {
+        if(fabs(mat_ref[c][c]) < SMALL_NUM) {
             get_order(mat_ref, n, order_arr);
 
             make_ordered_mat(mat_ref, n, order_arr, mat_ordered);
@@ -296,7 +298,9 @@ double rand_num(double min, double max) {
 void init_mat(int n, double ** mat) {
     for(int i = 0; i < n; ++i) {
         for(int j = 0; j < n; ++j) {
-            mat[i][j] = rand_num(-50, 50);
+            double rand_num_loc = rand_num(-50, 50);
+            if(fabs(rand_num_loc) < SMALL_NUM) { rand_num_loc = 0.0; }
+            mat[i][j] = rand_num_loc;
         }
     }
 }
