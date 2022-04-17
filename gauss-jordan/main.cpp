@@ -47,19 +47,6 @@ void get_order(double ** mat, int n, double * order_arr) {
     }
 }
 
-void insertion_sort(oa_elem_t * arr, int n) {
-
-    for(int j = 1; j < n; ++j) {
-        int key = arr[j].val;
-        int i = j - 1;
-        while(i > -1 && arr[i].val > key) {
-            arr[i + 1] = arr[i];
-            i = i - 1;
-            arr[i + 1].val = key;
-        }
-    }
-}
-
 void merge(oa_elem_t A[], int p, int q, int r) {
     int size_r, size_l;
     int i, j;
