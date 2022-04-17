@@ -106,7 +106,14 @@ void mergesort(oa_elem_t A[], int size) {
     merge_sort(A, 0, size - 1);
 }
 
-
+void print_mat(double ** mat, int n) {
+    for(int i = 0; i < n; ++i) {
+        for(int j = 0; j < n; ++j) {
+            printf("%.3f ", mat[i][j]);
+        }
+        printf("\n");
+    }
+}
 
 void make_ordered_mat(double ** mat, int n, double * order_arr, double ** ordered_mat) {
 
@@ -241,6 +248,12 @@ void gauss_jordan(double ** mat, int n, double ** mat_inv) {
                 }
                 mat_ref[row][c] = 0;
             }
+            
+            int num_lead_zeros = count_leading_zeros(mat_ref, n, row);
+            
+            if(num_lead_zeros >= n - 1) {
+                printf("Matrix is singular\n");
+            }
         }
 
     }
@@ -254,6 +267,21 @@ void gauss_jordan(double ** mat, int n, double ** mat_inv) {
                 }
                 mat_ref[row][c] = 0;
             }
+        }
+    }
+    
+    print_mat(mat_inv, n);
+    
+    // Check if there are rows with all zeros
+    for(int row = 0; row < n; ++row) {
+        bool all_zeros_loc = true;
+        for(int c = 0; c < n; ++c) {
+            if(mat_ref[row][c] != 0) {
+                all_zeros_loc = false;
+            }
+        }
+        if(all_zeros_loc) {
+            printf("Matrx is singular\n");
         }
     }
 }
@@ -270,15 +298,6 @@ void init_mat(int n, double ** mat) {
         for(int j = 0; j < n; ++j) {
             mat[i][j] = rand_num(-50, 50);
         }
-    }
-}
-
-void print_mat(double ** mat, int n) {
-    for(int i = 0; i < n; ++i) {
-        for(int j = 0; j < n; ++j) {
-            printf("%.3f ", mat[i][j]);
-        }
-        printf("\n");
     }
 }
 
