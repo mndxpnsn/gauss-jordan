@@ -133,6 +133,8 @@ void make_ordered_mat(double ** mat, int n, double * order_arr, double ** ordere
             ordered_mat[row][c] = mat[old_row][c];
         }
     }
+    
+    delete [] order_array;
 }
 
 int count_leading_zeros(double ** mat, int n, int row) {
@@ -169,13 +171,10 @@ void mat_mult_sq(double ** A, double ** A_inv, int n, double ** mat_res) {
 
 void gauss_jordan(double ** mat, int n, double ** mat_inv) {
 
-    double ** mat_check = mat2D(n);
-    double ** mat_check_ordered = mat2D(n);
     double ** mat_ref = mat2D(n);
     double ** mat_ordered = mat2D(n);
     double ** mat_inv_ordered = mat2D(n);
     double * order_arr = new double[n];
-
 
     // Initialize matrix inverse
     for(int row = 0; row < n; ++row) {
@@ -189,17 +188,15 @@ void gauss_jordan(double ** mat, int n, double ** mat_inv) {
         }
     }
 
+    // Sort the input matrix
     get_order(mat, n, order_arr);
 
     make_ordered_mat(mat, n, order_arr, mat_ordered);
-
-    make_ordered_mat(mat, n, order_arr, mat_check_ordered);
-
+    
     make_ordered_mat(mat_inv, n, order_arr, mat_inv_ordered);
 
     for(int row = 0; row < n; ++row) {
         for(int c = 0; c < n; ++c) {
-            mat_check[row][c] = mat_check_ordered[row][c];
             mat_ref[row][c] = mat_ordered[row][c];
             mat_inv[row][c] = mat_inv_ordered[row][c];
         }
@@ -216,13 +213,10 @@ void gauss_jordan(double ** mat, int n, double ** mat_inv) {
 
             make_ordered_mat(mat_inv, n, order_arr, mat_inv_ordered);
 
-            make_ordered_mat(mat_check, n, order_arr, mat_check_ordered);
-
             for(int row = 0; row < n; ++row) {
                 for(int c = 0; c < n; ++c) {
                     mat_ref[row][c] = mat_ordered[row][c];
                     mat_inv[row][c] = mat_inv_ordered[row][c];
-                    mat_check[row][c] = mat_check_ordered[row][c];
                 }
             }
         }
@@ -260,7 +254,7 @@ void gauss_jordan(double ** mat, int n, double ** mat_inv) {
 
     }
 
-    // Backtracing
+    // Backtrace to convert to reduced row echelon form
     for(int c = n - 1; c > 0; --c) {
         for(int row = c - 1; row > -1; row--) {
             if(mat_ref[row][c] != 0) {
@@ -272,20 +266,11 @@ void gauss_jordan(double ** mat, int n, double ** mat_inv) {
         }
     }
     
-    print_mat(mat_inv, n);
-    
-    // Check if there are rows with all zeros
-    for(int row = 0; row < n; ++row) {
-        bool all_zeros_loc = true;
-        for(int c = 0; c < n; ++c) {
-            if(mat_ref[row][c] != 0) {
-                all_zeros_loc = false;
-            }
-        }
-        if(all_zeros_loc) {
-            printf("Matrx is singular\n");
-        }
-    }
+    // Free allocated space
+    free_mat2D(mat_ref, n);
+    free_mat2D(mat_ordered, n);
+    free_mat2D(mat_inv_ordered, n);
+    delete [] order_arr;
 }
 
 double rand_num(double min, double max) {
