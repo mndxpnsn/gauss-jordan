@@ -52,8 +52,8 @@ void merge(oa_elem_t A[], int p, int q, int r) {
     int i, j;
     size_l = q - p + 1;
     size_r = r - q;
-    oa_elem_t L[size_l+1];
-    oa_elem_t R[size_r+1];
+    oa_elem_t L[size_l + 1];
+    oa_elem_t R[size_r + 1];
     i = 0;
     j = 0;
     for(int n = p; n < q + 1; ++n) {
@@ -174,6 +174,9 @@ void gauss_jordan(double ** mat, int n, double ** mat_inv) {
             }
         }
     }
+    
+    // Set singularity flas
+    bool is_singular = false;
 
     // Sort the input matrix
     get_order(mat, n, order_arr);
@@ -234,8 +237,9 @@ void gauss_jordan(double ** mat, int n, double ** mat_inv) {
             
             int num_lead_zeros = count_leading_zeros(mat_ref, n, row);
             
-            if(num_lead_zeros >= n - 1) {
+            if(num_lead_zeros >= n && !is_singular) {
                 printf("Matrix is singular\n");
+                is_singular = true;
             }
         }
 
@@ -253,6 +257,33 @@ void gauss_jordan(double ** mat, int n, double ** mat_inv) {
         }
     }
     
+    // Check if matrix is singular
+    for(int row = 0; row < n; ++row) {
+        bool all_zeros_c = true;
+        for(int c = 0; c < n; ++c) {
+            if(mat_ref[row][c] != 0) {
+                all_zeros_c = false;
+            }
+        }
+        if(all_zeros_c && !is_singular) {
+            printf("Matrix is singular\n");
+            is_singular = true;
+        }
+    }
+    
+    for(int col = 0; col < n; ++col) {
+        bool all_zeros_r = true;
+        for(int row = 0; row < n; ++row) {
+            if(mat_ref[row][col] != 0) {
+                all_zeros_r = false;
+            }
+        }
+        if(all_zeros_r && !is_singular) {
+            printf("Matrix is singular\n");
+            is_singular = true;
+        }
+    }
+    
     // Free allocated space
     free_mat2D(mat_ref, n);
     free_mat2D(mat_ordered, n);
@@ -267,10 +298,15 @@ double rand_num(double min, double max) {
     return val * (max - min) - (max - min) / 2;
 }
 
+double rand_di(int min, int max) {
+    
+    return rand() % (max - min) + min;
+}
+
 void init_mat(int n, double ** mat) {
     for(int i = 0; i < n; ++i) {
         for(int j = 0; j < n; ++j) {
-            double rand_num_loc = rand_num(-50, 50);
+            double rand_num_loc = rand_num(-25, 25);
             if(fabs(rand_num_loc) < SMALL_NUM) { rand_num_loc = 0.0; }
             mat[i][j] = rand_num_loc;
         }
