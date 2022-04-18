@@ -175,7 +175,7 @@ void gauss_jordan(double ** mat, int n, double ** mat_inv) {
         }
     }
     
-    // Set singularity flas
+    // Set singularity flag
     bool is_singular = false;
 
     // Sort the input matrix
