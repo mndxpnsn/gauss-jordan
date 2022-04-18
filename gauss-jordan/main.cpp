@@ -39,7 +39,7 @@ void get_order(double ** mat, int n, double * order_arr) {
     for(int row = 0; row < n; ++row) {
         int order = 0;
         for(int c = 0; c < n; ++c) {
-            if(mat[row][c] == 0) {
+            if(fabs(mat[row][c]) < SMALL_NUM) {
                 order++;
             }
         }
@@ -129,7 +129,7 @@ int count_leading_zeros(double ** mat, int n, int row) {
     int count_lz = 0;
 
     for(int c = 0; c < n; ++c) {
-        if(mat[row][c] == 0) {
+        if(fabs(mat[row][c]) < SMALL_NUM) {
             count_lz++;
         }
         else {
