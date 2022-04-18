@@ -155,6 +155,34 @@ void mat_mult_sq(double ** A, double ** A_inv, int n, double ** mat_res) {
     }
 }
 
+void singularity_check(double ** mat_ref, int n, bool & is_singular) {
+    
+    for(int row = 0; row < n; ++row) {
+        bool all_zeros_c = true;
+        for(int c = 0; c < n; ++c) {
+            if(mat_ref[row][c] != 0) {
+                all_zeros_c = false;
+            }
+        }
+        if(all_zeros_c && !is_singular) {
+            printf("Matrix is singular\n");
+            is_singular = true;
+        }
+    }
+    
+    for(int col = 0; col < n; ++col) {
+        bool all_zeros_r = true;
+        for(int row = 0; row < n; ++row) {
+            if(mat_ref[row][col] != 0) {
+                all_zeros_r = false;
+            }
+        }
+        if(all_zeros_r && !is_singular) {
+            printf("Matrix is singular\n");
+            is_singular = true;
+        }
+    }
+}
 
 void gauss_jordan(double ** mat, int n, double ** mat_inv) {
 
@@ -175,9 +203,6 @@ void gauss_jordan(double ** mat, int n, double ** mat_inv) {
         }
     }
     
-    // Set singularity flag
-    bool is_singular = false;
-
     // Sort the input matrix
     get_order(mat, n, order_arr);
 
@@ -191,6 +216,12 @@ void gauss_jordan(double ** mat, int n, double ** mat_inv) {
             mat_inv[row][c] = mat_inv_ordered[row][c];
         }
     }
+    
+    // Set singularity flag
+    bool is_singular = false;
+
+    // Check if input matrix is singular
+    singularity_check(mat_ref, n, is_singular);
 
     // Convert to row echelon form
     for(int c = 0; c < n; ++c) {
@@ -258,31 +289,7 @@ void gauss_jordan(double ** mat, int n, double ** mat_inv) {
     }
     
     // Check if matrix is singular
-    for(int row = 0; row < n; ++row) {
-        bool all_zeros_c = true;
-        for(int c = 0; c < n; ++c) {
-            if(mat_ref[row][c] != 0) {
-                all_zeros_c = false;
-            }
-        }
-        if(all_zeros_c && !is_singular) {
-            printf("Matrix is singular\n");
-            is_singular = true;
-        }
-    }
-    
-    for(int col = 0; col < n; ++col) {
-        bool all_zeros_r = true;
-        for(int row = 0; row < n; ++row) {
-            if(mat_ref[row][col] != 0) {
-                all_zeros_r = false;
-            }
-        }
-        if(all_zeros_r && !is_singular) {
-            printf("Matrix is singular\n");
-            is_singular = true;
-        }
-    }
+    singularity_check(mat_ref, n, is_singular);
     
     // Free allocated space
     free_mat2D(mat_ref, n);
