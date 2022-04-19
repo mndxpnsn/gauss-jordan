@@ -239,9 +239,6 @@ void gauss_jordan(double ** mat, int n, double ** mat_inv) {
 
     // Convert to row echelon form
     for(int c = 0; c < n; ++c) {
-
-        // Cut low values out of mat_ref
-        cut_low_vals(mat_ref, n);
         
         // Sort if under threshold
         if(fabs(mat_ref[c][c]) < SMALL_NUM) {
