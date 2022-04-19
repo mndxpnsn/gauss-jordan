@@ -159,8 +159,8 @@ void singularity_check(double ** mat_ref, int n, bool & is_singular) {
     
     for(int row = 0; row < n; ++row) {
         bool all_zeros_c = true;
-        for(int c = 0; c < n; ++c) {
-            if(mat_ref[row][c] != 0) {
+        for(int col = 0; col < n; ++col) {
+            if(fabs(mat_ref[row][col]) > SMALL_NUM) {
                 all_zeros_c = false;
             }
         }
@@ -173,7 +173,7 @@ void singularity_check(double ** mat_ref, int n, bool & is_singular) {
     for(int col = 0; col < n; ++col) {
         bool all_zeros_r = true;
         for(int row = 0; row < n; ++row) {
-            if(mat_ref[row][col] != 0) {
+            if(fabs(mat_ref[row][col]) > SMALL_NUM) {
                 all_zeros_r = false;
             }
         }
@@ -231,7 +231,7 @@ void gauss_jordan(double ** mat, int n, double ** mat_inv) {
         }
     }
     
-    // Set singularity flag
+    // Initialize singularity flag
     bool is_singular = false;
 
     // Check if input matrix is singular
@@ -258,12 +258,12 @@ void gauss_jordan(double ** mat, int n, double ** mat_inv) {
 
         // Normalize matrix row
         for(int col = c + 1; col < n; ++col) {
-            mat_ref[c][col] = mat_ref[c][col] / (mat_ref[c][c] + 1e-13);
+            mat_ref[c][col] = mat_ref[c][col] / (mat_ref[c][c] + SMALL_NUM);
         }
 
         // Update row matrix inverse
         for(int col = 0; col < n; ++col) {
-            mat_inv[c][col] = mat_inv[c][col] / (mat_ref[c][c] + 1e-13);
+            mat_inv[c][col] = mat_inv[c][col] / (mat_ref[c][c] + SMALL_NUM);
         }
 
         mat_ref[c][c] = 1.0;
