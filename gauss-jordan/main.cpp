@@ -6,7 +6,7 @@
 //
 
 #include <stdio.h>
-#include <map>
+#include <time.h>
 #include <math.h>
 
 const int MAX_INT = 1215752192;
@@ -184,6 +184,17 @@ void singularity_check(double ** mat_ref, int n, bool & is_singular) {
     }
 }
 
+void cut_low_vals(double ** mat, int n) {
+    
+    for(int row = 0; row < n; ++row) {
+        for(int col = 0; col < n; ++col) {
+            if(fabs(mat[row][col]) <= SMALL_NUM) {
+                mat[row][col] = 0.0;
+            }
+        }
+    }
+}
+
 void gauss_jordan(double ** mat, int n, double ** mat_inv) {
 
     double ** mat_ref = mat2D(n);
@@ -202,6 +213,9 @@ void gauss_jordan(double ** mat, int n, double ** mat_inv) {
             }
         }
     }
+    
+    // Cut low values out of input matrix
+    cut_low_vals(mat, n);
     
     // Sort the input matrix
     get_order(mat, n, order_arr);
@@ -226,6 +240,9 @@ void gauss_jordan(double ** mat, int n, double ** mat_inv) {
     // Convert to row echelon form
     for(int c = 0; c < n; ++c) {
 
+        // Cut low values out of mat_ref
+        cut_low_vals(mat_ref, n);
+        
         // Sort if under threshold
         if(fabs(mat_ref[c][c]) < SMALL_NUM) {
             get_order(mat_ref, n, order_arr);
@@ -311,6 +328,9 @@ double rand_di(int min, int max) {
 }
 
 void init_mat(int n, double ** mat) {
+    
+    srand((unsigned) time(NULL));
+    
     for(int i = 0; i < n; ++i) {
         for(int j = 0; j < n; ++j) {
             double rand_num_loc = rand_num(-25, 25);
