@@ -128,18 +128,13 @@ void sort_mat(double ** mat, int n, double * order_arr, double ** ordered_mat) {
 
 int count_leading_zeros(double ** mat, int n, int row) {
 
-    int count_lz = 0;
+    int count = 0;
 
-    for(int c = 0; c < n; ++c) {
-        if(fabs(mat[row][c]) <= SMALL_NUM) {
-            count_lz++;
-        }
-        else {
-            break;
-        }
+    while(fabs(mat[row][count]) <= SMALL_NUM && count < n) {
+        count++;
     }
 
-    return count_lz;
+    return count;
 }
 
 void mat_mult_sq(double ** A, double ** A_inv, int n, double ** mat_res) {
