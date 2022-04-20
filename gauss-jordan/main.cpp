@@ -38,11 +38,9 @@ void free_mat2D(double ** mat, int n) {
 void get_order(double ** mat, int n, double * order_arr) {
     for(int row = 0; row < n; ++row) {
         int order = 0;
-        int c = 0;
-        while(fabs(mat[row][c]) <= SMALL_NUM && c < n) {
-            mat[row][c] = 0.0;
+        while(fabs(mat[row][order]) <= SMALL_NUM && order < n) {
+            mat[row][order] = 0.0;
             order++;
-            c++;
         }
         order_arr[row] = order;
     }
