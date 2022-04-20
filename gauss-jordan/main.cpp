@@ -292,9 +292,9 @@ void gauss_jordan(double ** mat, int n, double ** mat_inv) {
 
     // Backtrace to convert to reduced row echelon form
     for(int c = n - 1; c > 0; --c) {
-        for(int row = c - 1; row > -1; row--) {
+        for(int row = c - 1; row > -1; --row) {
             if(mat_ref[row][c] != 0) {
-                for(int col = 0; col < n; col++) {
+                for(int col = 0; col < n; ++col) {
                     mat_inv[row][col] = -1.0 * mat_ref[row][c] * mat_inv[c][col] + mat_inv[row][col];
                 }
                 mat_ref[row][c] = 0;
@@ -358,7 +358,7 @@ int main(int argc, char * argv[]) {
 
     // Print results
     print_mat(mat_prod, n);
-
+    
     // Free allocated space
     free_mat2D(mat, n);
     free_mat2D(mat_inv, n);
