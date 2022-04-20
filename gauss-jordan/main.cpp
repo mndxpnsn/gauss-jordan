@@ -38,10 +38,11 @@ void free_mat2D(double ** mat, int n) {
 void get_order(double ** mat, int n, double * order_arr) {
     for(int row = 0; row < n; ++row) {
         int order = 0;
-        for(int c = 0; c < n; ++c) {
-            if(fabs(mat[row][c]) < SMALL_NUM) {
-                order++;
-            }
+        int c = 0;
+        while(fabs(mat[row][c]) <= SMALL_NUM && c < n) {
+            mat[row][c] = 0.0;
+            order++;
+            c++;
         }
         order_arr[row] = order;
     }
@@ -118,6 +119,9 @@ void sort_mat(double ** mat, int n, double * order_arr, double ** ordered_mat) {
         for(int c = 0; c < n; ++c) {
             int old_row = order_array[row].old_row;
             ordered_mat[row][c] = mat[old_row][c];
+            if(fabs(ordered_mat[row][c]) <= SMALL_NUM) {
+                ordered_mat[row][c] = 0.0;
+            }
         }
     }
     
@@ -129,7 +133,7 @@ int count_leading_zeros(double ** mat, int n, int row) {
     int count_lz = 0;
 
     for(int c = 0; c < n; ++c) {
-        if(fabs(mat[row][c]) < SMALL_NUM) {
+        if(fabs(mat[row][c]) <= SMALL_NUM) {
             count_lz++;
         }
         else {
@@ -213,9 +217,6 @@ void gauss_jordan(double ** mat, int n, double ** mat_inv) {
             }
         }
     }
-    
-    // Cut low values out of input matrix
-    cut_low_vals(mat, n);
     
     // Sort the input matrix
     get_order(mat, n, order_arr);
