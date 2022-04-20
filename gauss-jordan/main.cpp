@@ -5,9 +5,9 @@
 //  Created by mndx on 17/04/2022.
 //
 
+#include <math.h>
 #include <stdio.h>
 #include <time.h>
-#include <math.h>
 
 const int MAX_INT = 1215752192;
 const double SMALL_NUM = 1e-10;
@@ -103,7 +103,7 @@ void print_mat(double ** mat, int n) {
     }
 }
 
-void make_ordered_mat(double ** mat, int n, double * order_arr, double ** ordered_mat) {
+void sort_mat(double ** mat, int n, double * order_arr, double ** ordered_mat) {
 
     oa_elem_t * order_array = new oa_elem_t[n];
 
@@ -220,9 +220,9 @@ void gauss_jordan(double ** mat, int n, double ** mat_inv) {
     // Sort the input matrix
     get_order(mat, n, order_arr);
 
-    make_ordered_mat(mat, n, order_arr, mat_ordered);
+    sort_mat(mat, n, order_arr, mat_ordered);
     
-    make_ordered_mat(mat_inv, n, order_arr, mat_inv_ordered);
+    sort_mat(mat_inv, n, order_arr, mat_inv_ordered);
 
     for(int row = 0; row < n; ++row) {
         for(int c = 0; c < n; ++c) {
@@ -244,9 +244,9 @@ void gauss_jordan(double ** mat, int n, double ** mat_inv) {
         if(fabs(mat_ref[c][c]) < SMALL_NUM) {
             get_order(mat_ref, n, order_arr);
 
-            make_ordered_mat(mat_ref, n, order_arr, mat_ordered);
+            sort_mat(mat_ref, n, order_arr, mat_ordered);
 
-            make_ordered_mat(mat_inv, n, order_arr, mat_inv_ordered);
+            sort_mat(mat_inv, n, order_arr, mat_inv_ordered);
 
             for(int row = 0; row < n; ++row) {
                 for(int c = 0; c < n; ++c) {
