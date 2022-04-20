@@ -347,7 +347,7 @@ int main(int argc, char * argv[]) {
     double ** mat_inv = mat2D(n);
     double ** mat_prod = mat2D(n);
 
-    // Populate matrix A with some data
+    // Populate matrix mat with some data
     init_mat(n, mat);
 
     // Compute inverse using Gauss-Jordan method
