@@ -117,7 +117,7 @@ void get_order(double ** mat, int n, double * order_arr) {
     }
 }
 
-void sort_mat(double ** mat, int n, double * order_arr, double ** ordered_mat) {
+void mergesort_mat(double ** mat, int n, double * order_arr, double ** ordered_mat) {
 
     oa_elem_t * order_array = new oa_elem_t[n];
 
@@ -152,55 +152,19 @@ int count_leading_zeros(double ** mat, int n, int row) {
     return count;
 }
 
-void singularity_check(double ** mat_ref, int n, bool & is_singular) {
-
-    for(int row = 0; row < n; ++row) {
-        bool all_zeros_c = true;
-        for(int col = 0; col < n; ++col) {
-            if(fabs(mat_ref[row][col]) > SMALL_NUM) {
-                all_zeros_c = false;
-            }
-        }
-        if(all_zeros_c && !is_singular) {
-            printf("Matrix is singular\n");
-            is_singular = true;
-        }
-    }
-
-    for(int col = 0; col < n; ++col) {
-        bool all_zeros_r = true;
-        for(int row = 0; row < n; ++row) {
-            if(fabs(mat_ref[row][col]) > SMALL_NUM) {
-                all_zeros_r = false;
-            }
-        }
-        if(all_zeros_r && !is_singular) {
-            printf("Matrix is singular\n");
-            is_singular = true;
-        }
-    }
-}
-
-void cut_low_vals(double ** mat, int n) {
-
-    for(int row = 0; row < n; ++row) {
-        for(int col = 0; col < n; ++col) {
-            if(fabs(mat[row][col]) <= SMALL_NUM) {
-                mat[row][col] = 0.0;
-            }
-        }
-    }
-}
-
-void sort_matrix(double * order_arr, int n, double ** mat) {
+void sort_mat(double * order_arr, int n, double ** mat) {
 
     double ** mat_ordered = mat2D(n);
 
-    sort_mat(mat, n, order_arr, mat_ordered);
+    mergesort_mat(mat, n, order_arr, mat_ordered);
 
     for(int row = 0; row < n; ++row) {
         for(int c = 0; c < n; ++c) {
             mat[row][c] = mat_ordered[row][c];
+            
+            if(fabs(mat[row][c]) <= SMALL_NUM) {
+                mat[row][c] = 0.0;
+            }
         }
     }
 
@@ -248,21 +212,21 @@ void gauss_jordan(double ** mat, int n, double ** mat_inv) {
         if(fabs(mat[c][c]) <= SMALL_NUM) {
             get_order(mat, n, order_arr);
 
-            sort_matrix(order_arr, n, mat);
+            sort_mat(order_arr, n, mat);
 
-            sort_matrix(order_arr, n, mat_inv);
+            sort_mat(order_arr, n, mat_inv);
 
             check_leading_zeros(mat, n, is_singular);
         }
 
         // Normalize matrix row
         for(int col = c + 1; col < n; ++col) {
-            mat[c][col] = mat[c][col] / (mat[c][c] + SMALL_NUM);
+            mat[c][col] = fabs(mat[c][c]) <= SMALL_NUM ? 0.0 : mat[c][col] / mat[c][c];
         }
 
         // Update row matrix inverse
         for(int col = 0; col < n; ++col) {
-            mat_inv[c][col] = mat_inv[c][col] / (mat[c][c] + SMALL_NUM);
+            mat_inv[c][col] = fabs(mat[c][c]) <= SMALL_NUM ? 0.0 : mat_inv[c][col] / mat[c][c];
         }
 
         mat[c][c] = 1.0;
